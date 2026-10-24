@@ -77,15 +77,28 @@ section.area>button.ahead:focus-visible{outline:2px solid var(--posture);outline
 section.area[data-open="1"] .chev{transform:rotate(180deg)}
 
 ol.steps{list-style:none;margin:0 0 14px;padding:0;display:flex;flex-direction:column;gap:2px}
-li.step label{display:grid;grid-template-columns:28px 1fr;gap:10px;padding:10px 8px;border-radius:8px;cursor:pointer;align-items:start}
-li.step label:hover{background:var(--surface)}
+li.step{display:grid;grid-template-columns:28px 1fr;column-gap:10px;padding:0 8px;border-radius:8px}
+li.step:hover,li.step.open{background:var(--surface)}
+li.step label.chk{display:block;padding:10px 0;cursor:pointer;align-self:stretch}
 li.step input{position:absolute;opacity:0;width:1px;height:1px}
-.idol{width:16px;height:16px;margin:4px 0 0 5px;transform:rotate(45deg);border:2px solid var(--muted);border-radius:2px;transition:background .15s,border-color .15s}
+li.step button.body{all:unset;box-sizing:border-box;padding:10px 0;cursor:pointer}
+li.step button.body:focus-visible{outline:2px solid var(--posture);outline-offset:2px}
+.idol{display:block;width:16px;height:16px;margin:4px 0 0 5px;transform:rotate(45deg);border:2px solid var(--muted);border-radius:2px;transition:background .15s,border-color .15s}
 li.step input:checked + .idol{background:var(--posture);border-color:var(--posture)}
+li.step.part .chk .idol{background:linear-gradient(135deg,var(--posture) 50%,transparent 50%);border-color:var(--posture)}
 li.step input:focus-visible + .idol{outline:2px solid var(--posture);outline-offset:3px}
 .body{min-width:0;display:flex;flex-direction:column;gap:3px}
 .t{font-weight:500}
-li.step input:checked ~ .body .t{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--line)}
+li.step.done .t{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--line)}
+.detail{grid-column:2;display:flex;flex-direction:column;gap:8px;padding:0 0 12px}
+.detail .n{margin:0}
+ul.subs{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+ul.subs label{display:grid;grid-template-columns:22px 1fr;gap:8px;padding:6px 0;cursor:pointer;align-items:start;font-size:.9rem}
+.idol.sm{width:12px;height:12px;margin:5px 0 0 4px}
+ul.subs input:checked ~ .st{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--line)}
+a.wiki{color:var(--key);font-weight:700;font-size:.86rem;text-decoration:none;align-self:flex-start;padding:4px 0}
+a.wiki:hover{text-decoration:underline}
+.tag.cnt{background:var(--posture-soft);color:var(--ink);font-variant-numeric:tabular-nums}
 .n{color:var(--muted);font-size:.86rem}
 .tags{display:flex;flex-wrap:wrap;gap:5px}
 .tag{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:4px;background:var(--line);color:var(--ink)}
@@ -99,6 +112,7 @@ li.step input:checked ~ .body .t{color:var(--muted);text-decoration:line-through
 .legend{display:flex;flex-wrap:wrap;gap:10px 14px;font-size:.8rem;color:var(--muted);align-items:center}
 .legend span{display:inline-flex;gap:6px;align-items:center}
 footer{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:16px;font-size:.82rem;color:var(--muted)}
+footer a{color:inherit}
 .confirm{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--peril-soft);padding:10px 12px;border-radius:8px;color:var(--ink)}
 .empty{color:var(--muted);font-size:.88rem;padding:6px 8px 14px}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
@@ -137,103 +151,15 @@ footer{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--li
   <footer>
     <div id="saveState">Progress is saved on this device.</div>
     <div id="resetBox"><button type="button" class="btn" id="resetBtn">Reset progress</button></div>
-    <div>Route written from the game's community wikis (Fandom Sekiro wiki, Fextralife). Spoilers for every area.</div>
+    <div>Route written in our own words from the <a href="https://sekiro-shadows-die-twice.fandom.com/">Fandom Sekiro wiki</a> (CC BY-SA). Spoilers for every area.</div>
   </footer>
 </div>
 
+<script src="route.js"></script>
 <script>
-/* k: boss | mini | key | go (story step) — opt: optional — w: 危 warning */
-const ROUTE = [
- {id:"pro", name:"Prologue", sub:"Ashina Reservoir → Dilapidated Temple", steps:[
-  {id:"pro1",k:"go",t:"Climb out of the pit and find Kuro in the Moon-view Tower",n:"Kuro hands you Kusabimaru, your sword."},
-  {id:"pro2",k:"mini",opt:1,t:"Leader Shigenori Yamauchi",n:"Samurai general in the reservoir during the escape. Skippable."},
-  {id:"pro3",k:"boss",t:"Genichiro Ashina (first fight)",n:"You are meant to lose. The story continues either way."},
-  {id:"pro4",k:"key",t:"Wake in the Dilapidated Temple and get the Shinobi Prosthetic",n:"The Sculptor fits the arm. Rest at his idol."},
-  {id:"pro5",k:"go",opt:1,t:"Practice deflecting on Hanbei the Undying",n:"He never dies, so he is a free sparring partner."}
- ]},
- {id:"out", name:"Ashina Outskirts", sub:"Gate Path → Stairway → Castle Gate", steps:[
-  {id:"out1",k:"mini",t:"General Naomori Kawarada",n:"Just past the Outskirts Wall – Gate Path idol. Drops a Prayer Bead."},
-  {id:"out2",k:"key",t:"Young Lord's Bell Charm from the Timid Maid",n:"In a house after the Naomori area. Unlocks Hirata Estate.",w:"Grab it now. If the maid dies in the final invasion, Hirata Estate and its items are lost."},
-  {id:"out3",k:"mini",t:"Chained Ogre",n:"Outskirts Wall – Stairway. Grapple behind him for free hits."},
-  {id:"out4",k:"mini",opt:1,t:"General Tenzen Yamauchi",n:"Past the Chained Ogre, guarding the way to Underbridge Valley."},
-  {id:"out5",k:"boss",t:"Gyoubu Masataka Oniwa",n:"Ashina Castle Gate Fortress, on horseback. Two deathblows. Opens the way to the castle."},
-  {id:"out6",k:"mini",t:"Blazing Bull",n:"At the doors of Ashina Castle, just past Gyoubu."}
- ]},
- {id:"hir", name:"Hirata Estate", sub:"Optional memory via the Buddha statue", steps:[
-  {id:"hir1",k:"go",t:"Offer the Bell Charm at the temple's Buddha statue",n:"Can be done any time; most players come here before the castle."},
-  {id:"hir2",k:"mini",opt:1,t:"Shinobi Hunter Enshin of Misen",n:"Estate Path / Main Hall area."},
-  {id:"hir3",k:"key",t:"Hidden Temple Key from Owl",n:"In the burning courtyard past the Bamboo Thicket Slope idol."},
-  {id:"hir4",k:"mini",t:"Juzou the Drunkard",n:"Blocks the way to the Audience Chamber. Clear his bandits first."},
-  {id:"hir5",k:"boss",t:"Lady Butterfly",n:"Inside the Hidden Temple. Needed later for the Purification ending."}
- ]},
- {id:"cas", name:"Ashina Castle", sub:"Castle → Reservoir → Upper Tower", steps:[
-  {id:"cas1",k:"mini",t:"General Kuranosuke Matsumoto",n:"Top of the stairs past the castle's first idol."},
-  {id:"cas2",k:"mini",opt:1,t:"Lone Shadow Masanaga the Spear-Bearer",n:"Great Serpent Shrine, mourning a fallen comrade."},
-  {id:"cas3",k:"mini",opt:1,t:"Seven Ashina Spears – Shikibu Toshikatsu Yamauchi",n:"Ashina Reservoir, in front of the Moon-view Tower."},
-  {id:"cas4",k:"mini",opt:1,t:"Lone Shadow Longswordsman",n:"Ashina Reservoir, near the well from the prologue."},
-  {id:"cas5",k:"mini",opt:1,t:"Ashina Elite – Jinsuke Saze",n:"Upper Tower – Ashina Dojo."},
-  {id:"cas6",k:"boss",t:"Genichiro Ashina, Way of Tomoe",n:"Castle Tower Lookout, on the roof. Three phases."},
-  {id:"cas7",k:"go",t:"Talk to Kuro, then to Isshin about the Mortal Blade",n:"Report back to Kuro afterwards. Exhaust his dialogue (needed for Purification)."},
-  {id:"cas8",k:"key",t:"Gun Fort Shrine Key",n:"In Kuro's library room, which opens after talking to Isshin."}
- ]},
- {id:"sen", name:"Senpou Temple, Mt. Kongo", sub:"Quest item 1: Mortal Blade", steps:[
-  {id:"sen0",k:"go",t:"Reach Senpou via the Abandoned Dungeon and Bottomless Hole",n:"Tip: visiting before beating Genichiro gets you Holy Chapter: Infested from a monk (Return ending)."},
-  {id:"sen1",k:"mini",opt:1,t:"Shichimen Warrior (Bottomless Hole)",n:"Needs Divine Confetti to hurt it. Fine to skip."},
-  {id:"sen2",k:"mini",t:"Armored Warrior",n:"Shugendo bridge. Knock him off the edge."},
-  {id:"sen3",k:"mini",opt:1,t:"Long-arm Centipede Sen'un",n:"Temple Grounds, inside the abandoned temple."},
-  {id:"sen4",k:"boss",t:"Folding Screen Monkeys",n:"Ring the bell in the Main Hall to enter the Halls of Illusion."},
-  {id:"sen5",k:"key",t:"Mortal Blade",n:"From the Divine Child in the Inner Sanctum."}
- ]},
- {id:"sun", name:"Sunken Valley", sub:"Quest item 2: Lotus of the Palace", steps:[
-  {id:"sun1",k:"mini",t:"Snake Eyes Shirafuji",n:"Gun Fort. Her gunfire hurts; close the gap fast."},
-  {id:"sun2",k:"mini",t:"Long-arm Centipede Giraffe",n:"Inside the Gun Fort shrine (opened by the shrine key)."},
-  {id:"sun3",k:"go",t:"Sneak past the Great Serpent",n:"Wait for it to look away, then grapple across."},
-  {id:"sun4",k:"boss",t:"Guardian Ape",n:"Bodhisattva Valley. Has a second, headless phase in the same fight."},
-  {id:"sun5",k:"key",t:"Lotus of the Palace",n:"In the alcove behind the idol that appears after the Ape."}
- ]},
- {id:"dep", name:"Ashina Depths & Mibu Village", sub:"Quest item 3: Shelter Stone", steps:[
-  {id:"dep1",k:"mini",t:"Snake Eyes Shirahagi",n:"Poison Pool."},
-  {id:"dep2",k:"mini",opt:1,t:"Shichimen Warrior (Poison Pool)",n:"Divine Confetti required."},
-  {id:"dep3",k:"boss",opt:1,t:"Headless Ape",n:"Ashina Depths, after the Guardian Ape moves there. Needs the Mortal Blade."},
-  {id:"dep4",k:"mini",opt:1,t:"Tokujiro the Glutton",n:"Hidden Forest, on the slope behind the Mist Noble's temple."},
-  {id:"dep5",k:"mini",t:"Mist Noble",n:"Hidden Forest temple. Killing him lifts the fog to Mibu Village."},
-  {id:"dep6",k:"mini",opt:1,t:"O'Rin of the Water",n:"Water Mill, before the Head Priest's house. Divine Confetti required."},
-  {id:"dep7",k:"boss",t:"Corrupted Monk",n:"On the bridge near the Wedding Cave Door. Divine Confetti helps."},
-  {id:"dep8",k:"key",t:"Shelter Stone",n:"Inside the Wedding Cave."}
- ]},
- {id:"owl", name:"Ashina Castle, first invasion", sub:"Owl and the incense", steps:[
-  {id:"owl0",k:"go",t:"Return with all three items; the castle is invaded",w:"Only the Abandoned Dungeon Entrance idol works now. Start the Purification and Return quest lines before the Divine Dragon."},
-  {id:"owl1",k:"mini",opt:1,t:"Lone Shadow Vilehand",n:"Ashina Dojo, with an Interior Ministry agent."},
-  {id:"owl2",k:"go",t:"Meet Owl on the roof and choose",w:"Obeying the Iron Code locks you into the Shura ending. Break it to continue the full route."},
-  {id:"owl3",k:"boss",t:"Great Shinobi – Owl",n:"Drops the Aromatic Branch."},
-  {id:"owl4",k:"key",t:"Talk to Kuro and Emma until Kuro makes the incense",n:"Back and forth a few times. Talk to Emma right after Owl and at the Old Grave (Purification)."}
- ]},
- {id:"fnt", name:"Fountainhead Palace", sub:"Mibu Village palanquin → Sanctuary", steps:[
-  {id:"fnt1",k:"go",t:"Enter the palanquin at the Wedding Cave Door",n:"A creature carries you up to the palace."},
-  {id:"fnt2",k:"boss",t:"True Corrupted Monk",n:"Vermilion Bridge. Three phases."},
-  {id:"fnt3",k:"mini",opt:1,t:"Sakura Bull of the Palace",n:"Flower Viewing Stage."},
-  {id:"fnt4",k:"mini",opt:1,t:"Shichimen Warrior (Fountainhead)",n:"Flower Viewing Stage."},
-  {id:"fnt5",k:"mini",opt:1,t:"Okami Leader Shizu",n:"On the Great Sakura; attacks if you dive in the lake."},
-  {id:"fnt6",k:"boss",t:"Divine Dragon",n:"Sanctuary. Drops the Divine Dragon's Tears.",w:"Purification and Return steps must be done before this fight."}
- ]},
- {id:"fin", name:"Final invasion", sub:"Ashina under the Interior Ministry", steps:[
-  {id:"fin1",k:"go",t:"Return to Ashina and find Kuro",w:"Some NPCs die and side quests end here."},
-  {id:"fin2",k:"mini",opt:1,t:"Seven Ashina Spears – Shume Masaji Oniwa",n:"Ashina Reservoir, just past the idol."},
-  {id:"fin3",k:"mini",opt:1,t:"Ashina Elite – Ujinari Mizuo",n:"Dojo under Isshin's room."},
-  {id:"fin4",k:"mini",opt:1,t:"Shigekichi of the Red Guard",n:"Outskirts Wall – Stairway."},
-  {id:"fin5",k:"boss",opt:1,t:"Demon of Hatred",n:"Ashina Castle Gate. Three deathblows; toughest optional boss."},
-  {id:"fin6",k:"boss",t:"Isshin, the Sword Saint",n:"Ashina Reservoir field. Starts with Genichiro. Four phases."}
- ]},
- {id:"end", name:"Endings", sub:"Pick one; check off what you've done", steps:[
-  {id:"end1",k:"go",opt:1,t:"Shura",n:"Obey the Iron Code at Owl. Fight Emma and Isshin Ashina. Ends the game early."},
-  {id:"end2",k:"go",opt:1,t:"Immortal Severance",n:"The default. Beat Isshin and give Kuro the Divine Dragon's Tears."},
-  {id:"end3",k:"go",opt:1,t:"Purification",n:"Agree with Emma that Kuro must not die, eavesdrop on her with the Sculptor, get the Father's Bell Charm and beat Owl (Father) in Hirata Estate."},
-  {id:"end4",k:"go",opt:1,t:"Return",n:"Holy Chapter: Infested, cure the Divine Child's illness, Holy Chapter: Dragon's Return, both Serpent Viscera, then the Frozen Tears."}
- ]}
-];
 
 const KEY="sekiro-route-v1";
-const state={done:{},updated:0,filter:"all",hideDone:false,open:{}};
+const state={done:{},updated:0,filter:"all",hideDone:false,open:{},detail:null};
 let storeDoc=null;
 
 function readLocal(){try{const v=JSON.parse(localStorage.getItem(KEY)||"null");if(v&&v.done)return v}catch(e){}return null}
@@ -242,6 +168,13 @@ const loc=readLocal();
 if(loc){state.done=loc.done||{};state.updated=loc.updated||0;state.filter=loc.filter||"all";state.hideDone=!!loc.hideDone;state.open=loc.open||{}}
 
 const allSteps=ROUTE.flatMap(a=>a.steps.map(s=>({...s,area:a})));
+const stepById={},parentOf={};
+allSteps.forEach(s=>{stepById[s.id]=s;(s.sub||[]).forEach(x=>parentOf[x.id]=s)});
+/* A step with sub-steps is done exactly when all its sub-steps are; also upgrades progress saved before a step had sub-steps. */
+function reconcile(){allSteps.forEach(s=>{if(!s.sub)return;if(state.done[s.id]&&!s.sub.some(x=>state.done[x.id]))s.sub.forEach(x=>state.done[x.id]=1);if(s.sub.every(x=>state.done[x.id]))state.done[s.id]=1;else delete state.done[s.id]})}
+reconcile();
+const WIKI="https://sekiro-shadows-die-twice.fandom.com/wiki/Special:Search?go=Go&search=";
+function wikiURL(s){const q=s.wiki||((s.k==="boss"||s.k==="mini")?s.t.replace(/\s*\(.*?\)$/,"").replace(/ – /g," - "):s.area.wiki||s.area.name);return WIKI+encodeURIComponent(q)}
 const required=allSteps.filter(s=>!s.opt);
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -254,11 +187,17 @@ function visible(s){
   return true;
 }
 function stepHTML(s){
-  const tags=[];
+  const tags=[],subs=s.sub||[],sd=subs.filter(x=>state.done[x.id]).length,done=!!state.done[s.id],open=state.detail===s.id;
   if(KLABEL[s.k])tags.push(`<span class="tag ${s.k}">${KLABEL[s.k]}</span>`);
   if(s.opt)tags.push(`<span class="tag opt">Optional</span>`);
-  return `<li class="step"><label><input type="checkbox" id="c-${s.id}" data-id="${s.id}" ${state.done[s.id]?"checked":""}><span class="idol" aria-hidden="true"></span>
-  <span class="body"><span class="t">${esc(s.t)}</span>${tags.length?`<span class="tags">${tags.join("")}</span>`:""}${s.n?`<span class="n">${esc(s.n)}</span>`:""}${s.w?`<span class="warn"><b aria-label="Warning">危</b>${esc(s.w)}</span>`:""}</span></label></li>`;
+  if(subs.length)tags.push(`<span class="tag cnt">${sd}/${subs.length}</span>`);
+  const cls=["step"];if(done)cls.push("done");else if(sd)cls.push("part");if(open)cls.push("open");
+  return `<li class="${cls.join(" ")}"><label class="chk"><input type="checkbox" id="c-${s.id}" data-id="${s.id}" ${done?"checked":""} aria-label="Done: ${esc(s.t)}"><span class="idol" aria-hidden="true"></span></label>
+  <button type="button" class="body" data-detail="${s.id}" aria-expanded="${open}"><span class="t">${esc(s.t)}</span>${tags.length?`<span class="tags">${tags.join("")}</span>`:""}${s.w?`<span class="warn"><b aria-label="Warning">危</b>${esc(s.w)}</span>`:""}</button>${open?detailHTML(s):""}</li>`;
+}
+function detailHTML(s){
+  const subs=s.sub||[];
+  return `<div class="detail">${s.n?`<p class="n">${esc(s.n)}</p>`:""}${subs.length?`<ul class="subs">${subs.map(x=>`<li><label><input type="checkbox" data-id="${x.id}" ${state.done[x.id]?"checked":""}><span class="idol sm" aria-hidden="true"></span><span class="st">${esc(x.t)}</span></label></li>`).join("")}</ul>`:""}<a class="wiki" href="${wikiURL(s)}" target="_blank" rel="noopener">Open on Fandom wiki ↗</a></div>`;
 }
 function firstOpenArea(){const s=required.find(s=>!state.done[s.id]);return s?s.area.id:null}
 
@@ -269,7 +208,8 @@ function render(){
   $("pfill").style.width=pct+"%";$("pbar").setAttribute("aria-valuenow",pct);
 
   const nx=required.find(s=>!state.done[s.id]);
-  $("next").innerHTML=nx?`<div class="eyebrow">Next up · ${esc(nx.area.name)}</div><div class="what">${esc(nx.t)}</div>${nx.n?`<div class="note">${esc(nx.n)}</div>`:""}${nx.w?`<div class="warn"><b>危</b>${esc(nx.w)}</div>`:""}<div class="act"><button type="button" class="btn primary" id="nextDone" data-id="${nx.id}">Mark done</button><button type="button" class="btn" id="nextJump" data-area="${nx.area.id}">Show in list</button></div>`
+  const nsub=nx&&nx.sub?nx.sub.find(x=>!state.done[x.id]):null;
+  $("next").innerHTML=nx?`<div class="eyebrow">Next up · ${esc(nx.area.name)}</div><div class="what">${esc(nx.t)}</div>${nsub?`<div class="note"><b>Now:</b> ${esc(nsub.t)} <span class="where">(${nx.sub.indexOf(nsub)+1} of ${nx.sub.length})</span></div>`:""}${nx.n?`<div class="note">${esc(nx.n)}</div>`:""}${nx.w?`<div class="warn"><b>危</b>${esc(nx.w)}</div>`:""}<div class="act"><button type="button" class="btn primary" id="nextDone" data-id="${nsub?nsub.id:nx.id}">Mark done</button><button type="button" class="btn" id="nextJump" data-area="${nx.area.id}" data-step="${nx.id}">Show in list</button></div>`
     :`<div class="eyebrow">Route complete</div><div class="what">Every required step is done.</div><div class="note">Check the Endings section or start New Game Plus.</div>`;
 
   const cur=firstOpenArea();
@@ -294,8 +234,12 @@ function render(){
   $("hideDone").checked=state.hideDone;
 }
 
+function mark(id,val){if(val)state.done[id]=1;else delete state.done[id]}
 function setDone(id,val){
-  if(val)state.done[id]=1;else delete state.done[id];
+  mark(id,val);
+  const s=stepById[id],p=parentOf[id];
+  if(s&&s.sub)s.sub.forEach(x=>mark(x.id,val));
+  if(p)mark(p.id,p.sub.every(x=>state.done[x.id]));
   state.updated=Date.now();writeLocal();queueSync();render();
 }
 
@@ -307,12 +251,24 @@ document.addEventListener("click",e=>{
   const b=e.target.closest("button");if(!b)return;
   if(b.classList.contains("ahead")){const id=b.dataset.area,sec=$("a-"+id);state.open[id]=sec.dataset.open!=="1";writeLocal();render();return}
   if(b.dataset.f){state.filter=b.dataset.f;writeLocal();render();return}
+  if(b.dataset.detail){toggleDetail(b.dataset.detail);return}
   if(b.id==="nextDone"){setDone(b.dataset.id,true);return}
-  if(b.id==="nextJump"){state.open[b.dataset.area]=true;render();$("a-"+b.dataset.area).scrollIntoView({behavior:"smooth",block:"start"});return}
+  if(b.id==="nextJump"){state.open[b.dataset.area]=true;if(state.detail!==b.dataset.step)toggleDetail(b.dataset.step);else render();$("a-"+b.dataset.area).scrollIntoView({behavior:"smooth",block:"start"});return}
   if(b.id==="resetBtn"){$("resetBox").innerHTML=`<div class="confirm"><span>Clear every checkmark?</span><button type="button" class="btn danger" id="resetYes">Clear progress</button><button type="button" class="btn" id="resetNo">Keep</button></div>`;return}
   if(b.id==="resetYes"){state.done={};state.open={};state.updated=Date.now();writeLocal();queueSync();resetBack();render();return}
   if(b.id==="resetNo"){resetBack();return}
 });
+/* One step's details open at a time. Opening one adds a history entry, so the browser's or Android's back closes it. */
+function toggleDetail(id){
+  if(state.detail===id){history.back();return}
+  try{if(state.detail)history.replaceState({d:id},"");else history.pushState({d:id},"")}catch(e){}
+  showDetail(id);
+}
+function showDetail(id){
+  state.detail=id;render();
+  const b=id&&document.querySelector(`[data-detail="${id}"]`);if(b)b.focus({preventScroll:true});
+}
+window.addEventListener("popstate",e=>showDetail(e.state&&e.state.d||null));
 function resetBack(){$("resetBox").innerHTML=`<button type="button" class="btn" id="resetBtn">Reset progress</button>`}
 
 /* Sync to the viewer's own account when the page runs on claude.ai; plain device storage otherwise (e.g. inside the Android app). */
@@ -334,11 +290,12 @@ async function connect(){
     storeDoc=db.doc("data/users/"+uid+"/progress");
     const snap=await storeDoc.get();
     const remote=snap.exists?snap.data():null;
-    if(remote&&(remote.updated||0)>state.updated){state.done={...(remote.done||{})};state.updated=remote.updated||0;writeLocal();render()}
+    if(remote&&(remote.updated||0)>state.updated){state.done={...(remote.done||{})};state.updated=remote.updated||0;reconcile();writeLocal();render()}
     else if(state.updated>0){pushSync()}
     $("saveState").textContent="Progress is saved to your Claude account and syncs across devices.";
   }catch(e){storeDoc=null}
 }
+if(history.state&&history.state.d&&stepById[history.state.d])state.detail=history.state.d;
 render();connect();
 </script>
 </body></html>

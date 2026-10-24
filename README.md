@@ -4,17 +4,12 @@ A tiny offline checklist for Sekiro: Shadows Die Twice. It's a single WebView sh
 
 ## Get the APK
 
-**Option A: GitHub, no install needed**
-1. Create a new GitHub repository and upload the contents of this folder.
-2. Open the **Actions** tab. The "Build APK" workflow runs on every push.
-3. When it finishes, download `sekiro-route-apk` from the run page, unzip it and copy the `.apk` to your phone.
-
-**Option B: Android Studio**
-1. Open this folder in Android Studio and let it sync.
-2. Run **Build → Build App Bundle(s) / APK(s) → Build APK(s)**, or press Run with your phone plugged in.
+With JDK 17+ and the Android SDK installed, run `.\gradlew.bat installDebug` with your phone plugged in (USB debugging on), or open the folder in Android Studio and press Run.
 
 To install on the phone, open the `.apk` and allow "Install unknown apps" for your file manager when Android asks.
 
 ## Editing the route
 
-All steps live in the `ROUTE` list at the bottom of `app/src/main/assets/index.html`. Each step has an `id`, a kind `k` (`boss`, `mini`, `key`, `go`), a title `t`, a note `n`, an optional `opt:1` and a warning `w`. Keep existing `id`s unchanged so saved progress still matches.
+All steps live in the `ROUTE` list in `app/src/main/assets/route.js`. The field reference is at the top of that file. In short, each step has an `id`, a kind `k` (`boss`, `mini`, `key`, `go`), a title `t`, and optionally a note `n`, `opt:1`, a warning `w`, a Fandom search term `wiki`, and sub-steps `sub: [{id, t}]`. Keep existing `id`s unchanged so saved progress still matches.
+
+In the app, tap a step's diamond to check it off, and tap its title to open the details: the note, sub-steps and a link to the Fandom wiki. Android's back button closes the details.
