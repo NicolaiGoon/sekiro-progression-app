@@ -1,0 +1,344 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>Sekiro Route</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+/* Layout: one narrow column — sticky posture-bar header, "next up" card, collapsible area sections, each step a tappable row with a sculptor's-idol diamond as its checkbox */
+:root{
+  --bg:#e7ebe6;        /* Ashina mist */
+  --surface:#f4f6f2;
+  --line:#c9d0c8;
+  --ink:#1b2320;
+  --muted:#5c6a63;
+  --posture:#b7790d;   /* posture-bar amber: progress + done */
+  --posture-soft:#f0dfb8;
+  --peril:#b42b1f;     /* 危 perilous red: bosses + warnings */
+  --peril-soft:#f3d6d1;
+  --key:#2e5b6e;       /* key items: steel blue */
+  --key-soft:#d3e2e8;
+  --font-display:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho",Georgia,serif;
+  --font-body:"Zen Kaku Gothic New","Hiragino Sans","Segoe UI",Roboto,system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121715;--surface:#1a211e;--line:#2c3631;--ink:#e3e8e3;--muted:#93a199;
+  --posture:#e2a32c;--posture-soft:#3b2f15;--peril:#ec6a5c;--peril-soft:#3d1d19;--key:#84b6c9;--key-soft:#1c3038;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121715;--surface:#1a211e;--line:#2c3631;--ink:#e3e8e3;--muted:#93a199;
+  --posture:#e2a32c;--posture-soft:#3b2f15;--peril:#ec6a5c;--peril-soft:#3d1d19;--key:#84b6c9;--key-soft:#1c3038;color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--posture);outline-offset:2px}
+
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:14px 12px;
+  margin-left:calc(-1 * max(16px,env(safe-area-inset-left,0px)));margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px)));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));border-bottom:1px solid var(--line)}
+.hrow{max-width:640px;margin:0 auto;display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+h1{font-family:var(--font-display);font-weight:800;font-size:1.55rem;margin:0;letter-spacing:.01em;text-wrap:balance}
+h1 span{color:var(--peril);margin-left:.3em;font-size:1.1rem}
+.count{font-variant-numeric:tabular-nums;color:var(--muted);font-size:.85rem;white-space:nowrap}
+.count b{color:var(--ink);font-size:1.05rem}
+.posture{max-width:640px;margin:10px auto 0;height:8px;border-radius:4px;background:var(--line);position:relative;overflow:hidden}
+.posture i{position:absolute;inset:0 auto 0 50%;transform:translateX(-50%);background:var(--posture);border-radius:4px;transition:width .35s ease}
+.posture::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;background:var(--bg);transform:translateX(-50%)}
+
+.next{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.eyebrow{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.next .what{font-family:var(--font-display);font-size:1.2rem;font-weight:700;line-height:1.3}
+.next .where{color:var(--muted);font-size:.88rem}
+.next .note{font-size:.9rem}
+.next .act{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.btn{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:9px 14px;font-weight:700;cursor:pointer;font-size:.9rem}
+.btn.primary{background:var(--posture);border-color:var(--posture);color:#1b1404}
+.btn.danger{background:var(--peril);border-color:var(--peril);color:var(--bg)}
+
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:none;padding:7px 12px;font-size:.85rem;font-weight:500;cursor:pointer;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.hide{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--muted);cursor:pointer}
+
+section.area{border-top:1px solid var(--line)}
+section.area>button.ahead{all:unset;box-sizing:border-box;width:100%;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:14px 0;cursor:pointer}
+section.area>button.ahead:focus-visible{outline:2px solid var(--posture);outline-offset:2px}
+.num{font-family:var(--font-display);font-weight:800;color:var(--muted);font-size:.95rem;width:1.6em;text-align:right;font-variant-numeric:tabular-nums}
+.aname{min-width:0}
+.aname h2{font-family:var(--font-display);font-size:1.12rem;margin:0;font-weight:700;text-wrap:balance}
+.aname p{margin:2px 0 0;color:var(--muted);font-size:.82rem}
+.aprog{display:flex;flex-direction:column;align-items:flex-end;gap:4px;font-size:.8rem;font-variant-numeric:tabular-nums;color:var(--muted)}
+.mini-bar{width:56px;height:4px;background:var(--line);border-radius:2px;overflow:hidden}
+.mini-bar i{display:block;height:100%;background:var(--posture)}
+.area.complete .aname h2{color:var(--muted)}
+.area.complete .aprog{color:var(--posture);font-weight:700}
+.chev{transition:transform .2s}
+section.area[data-open="1"] .chev{transform:rotate(180deg)}
+
+ol.steps{list-style:none;margin:0 0 14px;padding:0;display:flex;flex-direction:column;gap:2px}
+li.step label{display:grid;grid-template-columns:28px 1fr;gap:10px;padding:10px 8px;border-radius:8px;cursor:pointer;align-items:start}
+li.step label:hover{background:var(--surface)}
+li.step input{position:absolute;opacity:0;width:1px;height:1px}
+.idol{width:16px;height:16px;margin:4px 0 0 5px;transform:rotate(45deg);border:2px solid var(--muted);border-radius:2px;transition:background .15s,border-color .15s}
+li.step input:checked + .idol{background:var(--posture);border-color:var(--posture)}
+li.step input:focus-visible + .idol{outline:2px solid var(--posture);outline-offset:3px}
+.body{min-width:0;display:flex;flex-direction:column;gap:3px}
+.t{font-weight:500}
+li.step input:checked ~ .body .t{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--line)}
+.n{color:var(--muted);font-size:.86rem}
+.tags{display:flex;flex-wrap:wrap;gap:5px}
+.tag{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:4px;background:var(--line);color:var(--ink)}
+.tag.boss{background:var(--peril);color:var(--bg)}
+.tag.mini{background:var(--peril-soft);color:var(--peril)}
+.tag.key{background:var(--key-soft);color:var(--key)}
+.tag.opt{background:transparent;border:1px solid var(--line);color:var(--muted)}
+.warn{display:flex;gap:6px;align-items:baseline;font-size:.85rem;color:var(--peril);font-weight:500}
+.warn b{font-family:var(--font-display);font-size:1rem}
+
+.legend{display:flex;flex-wrap:wrap;gap:10px 14px;font-size:.8rem;color:var(--muted);align-items:center}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+footer{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:16px;font-size:.82rem;color:var(--muted)}
+.confirm{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--peril-soft);padding:10px 12px;border-radius:8px;color:var(--ink)}
+.empty{color:var(--muted);font-size:.88rem;padding:6px 8px 14px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+
+<header>
+  <div class="hrow">
+    <h1>Sekiro Route<span aria-hidden="true">隻狼</span></h1>
+    <div class="count"><b id="doneCount">0</b> / <span id="totalCount">0</span> required</div>
+  </div>
+  <div class="posture" role="progressbar" aria-label="Required steps done" aria-valuemin="0" aria-valuemax="100" id="pbar"><i id="pfill" style="width:0%"></i></div>
+</header>
+
+<div class="wrap">
+  <div class="next" id="next" aria-live="polite"></div>
+
+  <div class="controls">
+    <div class="seg" role="group" aria-label="Show">
+      <button type="button" id="f-all" data-f="all" aria-pressed="true">All</button>
+      <button type="button" id="f-req" data-f="req" aria-pressed="false">Required</button>
+      <button type="button" id="f-boss" data-f="boss" aria-pressed="false">Bosses</button>
+    </div>
+    <label class="hide"><input type="checkbox" id="hideDone"> Hide done</label>
+  </div>
+
+  <div id="areas"></div>
+
+  <div class="legend" aria-label="Legend">
+    <span><span class="tag boss">Boss</span></span>
+    <span><span class="tag mini">Mini-boss</span></span>
+    <span><span class="tag key">Key item</span></span>
+    <span><span class="tag opt">Optional</span></span>
+    <span class="warn"><b>危</b> Missable or point of no return</span>
+  </div>
+
+  <footer>
+    <div id="saveState">Progress is saved on this device.</div>
+    <div id="resetBox"><button type="button" class="btn" id="resetBtn">Reset progress</button></div>
+    <div>Route written from the game's community wikis (Fandom Sekiro wiki, Fextralife). Spoilers for every area.</div>
+  </footer>
+</div>
+
+<script>
+/* k: boss | mini | key | go (story step) — opt: optional — w: 危 warning */
+const ROUTE = [
+ {id:"pro", name:"Prologue", sub:"Ashina Reservoir → Dilapidated Temple", steps:[
+  {id:"pro1",k:"go",t:"Climb out of the pit and find Kuro in the Moon-view Tower",n:"Kuro hands you Kusabimaru, your sword."},
+  {id:"pro2",k:"mini",opt:1,t:"Leader Shigenori Yamauchi",n:"Samurai general in the reservoir during the escape. Skippable."},
+  {id:"pro3",k:"boss",t:"Genichiro Ashina (first fight)",n:"You are meant to lose. The story continues either way."},
+  {id:"pro4",k:"key",t:"Wake in the Dilapidated Temple and get the Shinobi Prosthetic",n:"The Sculptor fits the arm. Rest at his idol."},
+  {id:"pro5",k:"go",opt:1,t:"Practice deflecting on Hanbei the Undying",n:"He never dies, so he is a free sparring partner."}
+ ]},
+ {id:"out", name:"Ashina Outskirts", sub:"Gate Path → Stairway → Castle Gate", steps:[
+  {id:"out1",k:"mini",t:"General Naomori Kawarada",n:"Just past the Outskirts Wall – Gate Path idol. Drops a Prayer Bead."},
+  {id:"out2",k:"key",t:"Young Lord's Bell Charm from the Timid Maid",n:"In a house after the Naomori area. Unlocks Hirata Estate.",w:"Grab it now. If the maid dies in the final invasion, Hirata Estate and its items are lost."},
+  {id:"out3",k:"mini",t:"Chained Ogre",n:"Outskirts Wall – Stairway. Grapple behind him for free hits."},
+  {id:"out4",k:"mini",opt:1,t:"General Tenzen Yamauchi",n:"Past the Chained Ogre, guarding the way to Underbridge Valley."},
+  {id:"out5",k:"boss",t:"Gyoubu Masataka Oniwa",n:"Ashina Castle Gate Fortress, on horseback. Two deathblows. Opens the way to the castle."},
+  {id:"out6",k:"mini",t:"Blazing Bull",n:"At the doors of Ashina Castle, just past Gyoubu."}
+ ]},
+ {id:"hir", name:"Hirata Estate", sub:"Optional memory via the Buddha statue", steps:[
+  {id:"hir1",k:"go",t:"Offer the Bell Charm at the temple's Buddha statue",n:"Can be done any time; most players come here before the castle."},
+  {id:"hir2",k:"mini",opt:1,t:"Shinobi Hunter Enshin of Misen",n:"Estate Path / Main Hall area."},
+  {id:"hir3",k:"key",t:"Hidden Temple Key from Owl",n:"In the burning courtyard past the Bamboo Thicket Slope idol."},
+  {id:"hir4",k:"mini",t:"Juzou the Drunkard",n:"Blocks the way to the Audience Chamber. Clear his bandits first."},
+  {id:"hir5",k:"boss",t:"Lady Butterfly",n:"Inside the Hidden Temple. Needed later for the Purification ending."}
+ ]},
+ {id:"cas", name:"Ashina Castle", sub:"Castle → Reservoir → Upper Tower", steps:[
+  {id:"cas1",k:"mini",t:"General Kuranosuke Matsumoto",n:"Top of the stairs past the castle's first idol."},
+  {id:"cas2",k:"mini",opt:1,t:"Lone Shadow Masanaga the Spear-Bearer",n:"Great Serpent Shrine, mourning a fallen comrade."},
+  {id:"cas3",k:"mini",opt:1,t:"Seven Ashina Spears – Shikibu Toshikatsu Yamauchi",n:"Ashina Reservoir, in front of the Moon-view Tower."},
+  {id:"cas4",k:"mini",opt:1,t:"Lone Shadow Longswordsman",n:"Ashina Reservoir, near the well from the prologue."},
+  {id:"cas5",k:"mini",opt:1,t:"Ashina Elite – Jinsuke Saze",n:"Upper Tower – Ashina Dojo."},
+  {id:"cas6",k:"boss",t:"Genichiro Ashina, Way of Tomoe",n:"Castle Tower Lookout, on the roof. Three phases."},
+  {id:"cas7",k:"go",t:"Talk to Kuro, then to Isshin about the Mortal Blade",n:"Report back to Kuro afterwards. Exhaust his dialogue (needed for Purification)."},
+  {id:"cas8",k:"key",t:"Gun Fort Shrine Key",n:"In Kuro's library room, which opens after talking to Isshin."}
+ ]},
+ {id:"sen", name:"Senpou Temple, Mt. Kongo", sub:"Quest item 1: Mortal Blade", steps:[
+  {id:"sen0",k:"go",t:"Reach Senpou via the Abandoned Dungeon and Bottomless Hole",n:"Tip: visiting before beating Genichiro gets you Holy Chapter: Infested from a monk (Return ending)."},
+  {id:"sen1",k:"mini",opt:1,t:"Shichimen Warrior (Bottomless Hole)",n:"Needs Divine Confetti to hurt it. Fine to skip."},
+  {id:"sen2",k:"mini",t:"Armored Warrior",n:"Shugendo bridge. Knock him off the edge."},
+  {id:"sen3",k:"mini",opt:1,t:"Long-arm Centipede Sen'un",n:"Temple Grounds, inside the abandoned temple."},
+  {id:"sen4",k:"boss",t:"Folding Screen Monkeys",n:"Ring the bell in the Main Hall to enter the Halls of Illusion."},
+  {id:"sen5",k:"key",t:"Mortal Blade",n:"From the Divine Child in the Inner Sanctum."}
+ ]},
+ {id:"sun", name:"Sunken Valley", sub:"Quest item 2: Lotus of the Palace", steps:[
+  {id:"sun1",k:"mini",t:"Snake Eyes Shirafuji",n:"Gun Fort. Her gunfire hurts; close the gap fast."},
+  {id:"sun2",k:"mini",t:"Long-arm Centipede Giraffe",n:"Inside the Gun Fort shrine (opened by the shrine key)."},
+  {id:"sun3",k:"go",t:"Sneak past the Great Serpent",n:"Wait for it to look away, then grapple across."},
+  {id:"sun4",k:"boss",t:"Guardian Ape",n:"Bodhisattva Valley. Has a second, headless phase in the same fight."},
+  {id:"sun5",k:"key",t:"Lotus of the Palace",n:"In the alcove behind the idol that appears after the Ape."}
+ ]},
+ {id:"dep", name:"Ashina Depths & Mibu Village", sub:"Quest item 3: Shelter Stone", steps:[
+  {id:"dep1",k:"mini",t:"Snake Eyes Shirahagi",n:"Poison Pool."},
+  {id:"dep2",k:"mini",opt:1,t:"Shichimen Warrior (Poison Pool)",n:"Divine Confetti required."},
+  {id:"dep3",k:"boss",opt:1,t:"Headless Ape",n:"Ashina Depths, after the Guardian Ape moves there. Needs the Mortal Blade."},
+  {id:"dep4",k:"mini",opt:1,t:"Tokujiro the Glutton",n:"Hidden Forest, on the slope behind the Mist Noble's temple."},
+  {id:"dep5",k:"mini",t:"Mist Noble",n:"Hidden Forest temple. Killing him lifts the fog to Mibu Village."},
+  {id:"dep6",k:"mini",opt:1,t:"O'Rin of the Water",n:"Water Mill, before the Head Priest's house. Divine Confetti required."},
+  {id:"dep7",k:"boss",t:"Corrupted Monk",n:"On the bridge near the Wedding Cave Door. Divine Confetti helps."},
+  {id:"dep8",k:"key",t:"Shelter Stone",n:"Inside the Wedding Cave."}
+ ]},
+ {id:"owl", name:"Ashina Castle, first invasion", sub:"Owl and the incense", steps:[
+  {id:"owl0",k:"go",t:"Return with all three items; the castle is invaded",w:"Only the Abandoned Dungeon Entrance idol works now. Start the Purification and Return quest lines before the Divine Dragon."},
+  {id:"owl1",k:"mini",opt:1,t:"Lone Shadow Vilehand",n:"Ashina Dojo, with an Interior Ministry agent."},
+  {id:"owl2",k:"go",t:"Meet Owl on the roof and choose",w:"Obeying the Iron Code locks you into the Shura ending. Break it to continue the full route."},
+  {id:"owl3",k:"boss",t:"Great Shinobi – Owl",n:"Drops the Aromatic Branch."},
+  {id:"owl4",k:"key",t:"Talk to Kuro and Emma until Kuro makes the incense",n:"Back and forth a few times. Talk to Emma right after Owl and at the Old Grave (Purification)."}
+ ]},
+ {id:"fnt", name:"Fountainhead Palace", sub:"Mibu Village palanquin → Sanctuary", steps:[
+  {id:"fnt1",k:"go",t:"Enter the palanquin at the Wedding Cave Door",n:"A creature carries you up to the palace."},
+  {id:"fnt2",k:"boss",t:"True Corrupted Monk",n:"Vermilion Bridge. Three phases."},
+  {id:"fnt3",k:"mini",opt:1,t:"Sakura Bull of the Palace",n:"Flower Viewing Stage."},
+  {id:"fnt4",k:"mini",opt:1,t:"Shichimen Warrior (Fountainhead)",n:"Flower Viewing Stage."},
+  {id:"fnt5",k:"mini",opt:1,t:"Okami Leader Shizu",n:"On the Great Sakura; attacks if you dive in the lake."},
+  {id:"fnt6",k:"boss",t:"Divine Dragon",n:"Sanctuary. Drops the Divine Dragon's Tears.",w:"Purification and Return steps must be done before this fight."}
+ ]},
+ {id:"fin", name:"Final invasion", sub:"Ashina under the Interior Ministry", steps:[
+  {id:"fin1",k:"go",t:"Return to Ashina and find Kuro",w:"Some NPCs die and side quests end here."},
+  {id:"fin2",k:"mini",opt:1,t:"Seven Ashina Spears – Shume Masaji Oniwa",n:"Ashina Reservoir, just past the idol."},
+  {id:"fin3",k:"mini",opt:1,t:"Ashina Elite – Ujinari Mizuo",n:"Dojo under Isshin's room."},
+  {id:"fin4",k:"mini",opt:1,t:"Shigekichi of the Red Guard",n:"Outskirts Wall – Stairway."},
+  {id:"fin5",k:"boss",opt:1,t:"Demon of Hatred",n:"Ashina Castle Gate. Three deathblows; toughest optional boss."},
+  {id:"fin6",k:"boss",t:"Isshin, the Sword Saint",n:"Ashina Reservoir field. Starts with Genichiro. Four phases."}
+ ]},
+ {id:"end", name:"Endings", sub:"Pick one; check off what you've done", steps:[
+  {id:"end1",k:"go",opt:1,t:"Shura",n:"Obey the Iron Code at Owl. Fight Emma and Isshin Ashina. Ends the game early."},
+  {id:"end2",k:"go",opt:1,t:"Immortal Severance",n:"The default. Beat Isshin and give Kuro the Divine Dragon's Tears."},
+  {id:"end3",k:"go",opt:1,t:"Purification",n:"Agree with Emma that Kuro must not die, eavesdrop on her with the Sculptor, get the Father's Bell Charm and beat Owl (Father) in Hirata Estate."},
+  {id:"end4",k:"go",opt:1,t:"Return",n:"Holy Chapter: Infested, cure the Divine Child's illness, Holy Chapter: Dragon's Return, both Serpent Viscera, then the Frozen Tears."}
+ ]}
+];
+
+const KEY="sekiro-route-v1";
+const state={done:{},updated:0,filter:"all",hideDone:false,open:{}};
+let storeDoc=null;
+
+function readLocal(){try{const v=JSON.parse(localStorage.getItem(KEY)||"null");if(v&&v.done)return v}catch(e){}return null}
+function writeLocal(){try{localStorage.setItem(KEY,JSON.stringify({done:state.done,updated:state.updated,filter:state.filter,hideDone:state.hideDone,open:state.open}))}catch(e){}}
+const loc=readLocal();
+if(loc){state.done=loc.done||{};state.updated=loc.updated||0;state.filter=loc.filter||"all";state.hideDone=!!loc.hideDone;state.open=loc.open||{}}
+
+const allSteps=ROUTE.flatMap(a=>a.steps.map(s=>({...s,area:a})));
+const required=allSteps.filter(s=>!s.opt);
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const KLABEL={boss:"Boss",mini:"Mini-boss",key:"Key item"};
+
+function visible(s){
+  if(state.filter==="req"&&s.opt)return false;
+  if(state.filter==="boss"&&!(s.k==="boss"||s.k==="mini"))return false;
+  if(state.hideDone&&state.done[s.id])return false;
+  return true;
+}
+function stepHTML(s){
+  const tags=[];
+  if(KLABEL[s.k])tags.push(`<span class="tag ${s.k}">${KLABEL[s.k]}</span>`);
+  if(s.opt)tags.push(`<span class="tag opt">Optional</span>`);
+  return `<li class="step"><label><input type="checkbox" id="c-${s.id}" data-id="${s.id}" ${state.done[s.id]?"checked":""}><span class="idol" aria-hidden="true"></span>
+  <span class="body"><span class="t">${esc(s.t)}</span>${tags.length?`<span class="tags">${tags.join("")}</span>`:""}${s.n?`<span class="n">${esc(s.n)}</span>`:""}${s.w?`<span class="warn"><b aria-label="Warning">危</b>${esc(s.w)}</span>`:""}</span></label></li>`;
+}
+function firstOpenArea(){const s=required.find(s=>!state.done[s.id]);return s?s.area.id:null}
+
+function render(){
+  const doneReq=required.filter(s=>state.done[s.id]).length;
+  $("doneCount").textContent=doneReq;$("totalCount").textContent=required.length;
+  const pct=Math.round(doneReq/required.length*100);
+  $("pfill").style.width=pct+"%";$("pbar").setAttribute("aria-valuenow",pct);
+
+  const nx=required.find(s=>!state.done[s.id]);
+  $("next").innerHTML=nx?`<div class="eyebrow">Next up · ${esc(nx.area.name)}</div><div class="what">${esc(nx.t)}</div>${nx.n?`<div class="note">${esc(nx.n)}</div>`:""}${nx.w?`<div class="warn"><b>危</b>${esc(nx.w)}</div>`:""}<div class="act"><button type="button" class="btn primary" id="nextDone" data-id="${nx.id}">Mark done</button><button type="button" class="btn" id="nextJump" data-area="${nx.area.id}">Show in list</button></div>`
+    :`<div class="eyebrow">Route complete</div><div class="what">Every required step is done.</div><div class="note">Check the Endings section or start New Game Plus.</div>`;
+
+  const cur=firstOpenArea();
+  $("areas").innerHTML=ROUTE.map((a,i)=>{
+    const req=a.steps.filter(s=>!s.opt),dr=req.filter(s=>state.done[s.id]).length;
+    const all=a.steps.length,da=a.steps.filter(s=>state.done[s.id]).length;
+    const total=req.length||all,d=req.length?dr:da;
+    const open=state.open[a.id]!==undefined?state.open[a.id]:a.id===cur;
+    const vis=a.steps.filter(visible);
+    const complete=d===total;
+    return `<section class="area${complete?" complete":""}" id="a-${a.id}" data-open="${open?1:0}">
+      <button type="button" class="ahead" aria-expanded="${open}" data-area="${a.id}">
+        <span class="num">${i+1}</span>
+        <span class="aname"><h2>${esc(a.name)}</h2><p>${esc(a.sub)}</p></span>
+        <span class="aprog"><span>${complete?"Done":`${d}/${total}`}</span><span class="mini-bar"><i style="width:${Math.round(d/total*100)}%"></i></span></span>
+      </button>
+      <div ${open?"":"hidden"}>${vis.length?`<ol class="steps">${vis.map(stepHTML).join("")}</ol>`:`<div class="empty">Nothing to show with these filters.</div>`}</div>
+    </section>`;
+  }).join("");
+
+  document.querySelectorAll(".seg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.f===state.filter));
+  $("hideDone").checked=state.hideDone;
+}
+
+function setDone(id,val){
+  if(val)state.done[id]=1;else delete state.done[id];
+  state.updated=Date.now();writeLocal();queueSync();render();
+}
+
+document.addEventListener("change",e=>{
+  if(e.target.dataset.id){setDone(e.target.dataset.id,e.target.checked)}
+  else if(e.target.id==="hideDone"){state.hideDone=e.target.checked;writeLocal();render()}
+});
+document.addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  if(b.classList.contains("ahead")){const id=b.dataset.area,sec=$("a-"+id);state.open[id]=sec.dataset.open!=="1";writeLocal();render();return}
+  if(b.dataset.f){state.filter=b.dataset.f;writeLocal();render();return}
+  if(b.id==="nextDone"){setDone(b.dataset.id,true);return}
+  if(b.id==="nextJump"){state.open[b.dataset.area]=true;render();$("a-"+b.dataset.area).scrollIntoView({behavior:"smooth",block:"start"});return}
+  if(b.id==="resetBtn"){$("resetBox").innerHTML=`<div class="confirm"><span>Clear every checkmark?</span><button type="button" class="btn danger" id="resetYes">Clear progress</button><button type="button" class="btn" id="resetNo">Keep</button></div>`;return}
+  if(b.id==="resetYes"){state.done={};state.open={};state.updated=Date.now();writeLocal();queueSync();resetBack();render();return}
+  if(b.id==="resetNo"){resetBack();return}
+});
+function resetBack(){$("resetBox").innerHTML=`<button type="button" class="btn" id="resetBtn">Reset progress</button>`}
+
+/* Sync to the viewer's own account when the page runs on claude.ai; plain device storage otherwise (e.g. inside the Android app). */
+let syncTimer=null,inflight=false,again=false;
+function queueSync(){if(!storeDoc)return;clearTimeout(syncTimer);syncTimer=setTimeout(pushSync,600)}
+async function pushSync(){
+  if(inflight){again=true;return}
+  inflight=true;
+  try{await storeDoc.set({done:{...state.done},updated:state.updated});$("saveState").textContent="Progress is saved to your Claude account and syncs across devices."}
+  catch(e){$("saveState").textContent="Saved on this device. Account sync is unavailable right now."}
+  inflight=false;if(again){again=false;pushSync()}
+}
+async function connect(){
+  if(!window.claude||!window.claude.use)return;
+  try{
+    const [db,user]=await Promise.all([claude.use("db"),claude.use("user")]);
+    if(!db||!user)return;
+    const uid=await user.id();if(!uid)return;
+    storeDoc=db.doc("data/users/"+uid+"/progress");
+    const snap=await storeDoc.get();
+    const remote=snap.exists?snap.data():null;
+    if(remote&&(remote.updated||0)>state.updated){state.done={...(remote.done||{})};state.updated=remote.updated||0;writeLocal();render()}
+    else if(state.updated>0){pushSync()}
+    $("saveState").textContent="Progress is saved to your Claude account and syncs across devices.";
+  }catch(e){storeDoc=null}
+}
+render();connect();
+</script>
+</body></html>
