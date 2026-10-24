@@ -4,14 +4,7 @@ A tiny offline checklist for Sekiro: Shadows Die Twice. It's a single WebView sh
 
 ## Get the APK
 
-**Option A: GitHub, no install needed**
-1. Create a new GitHub repository and upload the contents of this folder.
-2. Open the **Actions** tab. The "Build APK" workflow runs on every push.
-3. When it finishes, download `sekiro-route-apk` from the run page, unzip it and copy the `.apk` to your phone.
-
-**Option B: Android Studio**
-1. Open this folder in Android Studio and let it sync.
-2. Run **Build → Build App Bundle(s) / APK(s) → Build APK(s)**, or press Run with your phone plugged in.
+With JDK 17+ and the Android SDK installed, run `.\gradlew.bat installDebug` with your phone plugged in (USB debugging on), or open the folder in Android Studio and press Run.
 
 To install on the phone, open the `.apk` and allow "Install unknown apps" for your file manager when Android asks.
 
