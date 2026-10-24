@@ -17,4 +17,6 @@ To install on the phone, open the `.apk` and allow "Install unknown apps" for yo
 
 ## Editing the route
 
-All steps live in the `ROUTE` list at the bottom of `app/src/main/assets/index.html`. Each step has an `id`, a kind `k` (`boss`, `mini`, `key`, `go`), a title `t`, a note `n`, an optional `opt:1` and a warning `w`. Keep existing `id`s unchanged so saved progress still matches.
+All steps live in the `ROUTE` list in `app/src/main/assets/route.js`. The field reference is at the top of that file. In short, each step has an `id`, a kind `k` (`boss`, `mini`, `key`, `go`), a title `t`, and optionally a note `n`, `opt:1`, a warning `w`, a Fandom search term `wiki`, and sub-steps `sub: [{id, t}]`. Keep existing `id`s unchanged so saved progress still matches.
+
+In the app, tap a step's diamond to check it off, and tap its title to open the details: the note, sub-steps and a link to the Fandom wiki. Android's back button closes the details.
